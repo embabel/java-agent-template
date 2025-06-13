@@ -18,6 +18,7 @@ package com.embabel.template.agent;
 import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
+import com.embabel.agent.api.annotation.Condition;
 import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.api.common.PromptRunner;
 import com.embabel.agent.domain.io.UserInput;
@@ -88,7 +89,7 @@ record ReviewedStory(
 
 @Agent(description = "Generate a story based on user input and review it")
 @Profile("!test")
-class WriteAndReviewAgent {
+public class WriteAndReviewAgent {
 
     private final int storyWordCount;
     private final int reviewWordCount;
@@ -101,8 +102,11 @@ class WriteAndReviewAgent {
         this.reviewWordCount = reviewWordCount;
     }
 
-    @Action
-    Story craftStory(UserInput userInput) {
+    @Action(
+            post = {"isStoryShortEnough"},
+            canRerun = true
+    )
+    public Story craftStory(UserInput userInput) {
         return PromptRunner.usingLlm(
                  LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE)
                         .withTemperature(0.9) // Higher temperature for more creative output
@@ -149,5 +153,10 @@ class WriteAndReviewAgent {
                 review,
                 Personas.REVIEWER
         );
+    }
+
+    @Condition(name = "isStoryShortEnough")
+    public boolean isStoryLongEnough(Story story, OperationContext operationContext) {
+        return story.text().length() < 200;
     }
 }
