@@ -1,0 +1,9 @@
+services:
+
+  a2a-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.a2a
+    ports:
+      - "12000:12000"
+
