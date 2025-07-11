@@ -1,8 +1,9 @@
 @echo off
 setlocal
 
-set AGENT_APPLICATION=..
+set "script_dir=%~dp0"
+set AGENT_APPLICATION=%script_dir%.."
 
-call .\support\agent.bat
+call "%script_dir%support\agent.bat"
 
 endlocal
