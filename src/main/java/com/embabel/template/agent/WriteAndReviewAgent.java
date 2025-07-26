@@ -18,6 +18,7 @@ package com.embabel.template.agent;
 import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
+import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.api.common.PromptRunner;
 import com.embabel.agent.domain.io.UserInput;
@@ -54,7 +55,8 @@ abstract class Personas {
     );
 }
 
-record Story(String text) {}
+record Story(String text) {
+}
 
 record ReviewedStory(
         Story story,
@@ -72,15 +74,15 @@ record ReviewedStory(
     @NonNull
     public String getContent() {
         return String.format("""
-            # Story
-            %s
-
-            # Review
-            %s
-
-            # Reviewer
-            %s, %s
-            """,
+                        # Story
+                        %s
+                        
+                        # Review
+                        %s
+                        
+                        # Reviewer
+                        %s, %s
+                        """,
                 story.text(),
                 review,
                 reviewer.getName(),
@@ -105,24 +107,26 @@ class WriteAndReviewAgent {
         this.reviewWordCount = reviewWordCount;
     }
 
-    @AchievesGoal(description="The story has been crafted and reviewed by a book reviewer")
+    @AchievesGoal(
+            description = "The story has been crafted and reviewed by a book reviewer",
+            export = @Export(remote = true, name = "writeAndReviewStory"))
     @Action
     ReviewedStory reviewStory(UserInput userInput, Story story, OperationContext context) {
         String review = context.promptRunner()
                 .withLlm(LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE))
                 .withPromptContributor(Personas.REVIEWER)
                 .generateText(String.format("""
-                You will be given a short story to review.
-                Review it in %d words or less.
-                Consider whether or not the story is engaging, imaginative, and well-written.
-                Also consider whether the story is appropriate given the original user input.
-
-                # Story
-                %s
-
-                # User input that inspired the story
-                %s
-                """,
+                                You will be given a short story to review.
+                                Review it in %d words or less.
+                                Consider whether or not the story is engaging, imaginative, and well-written.
+                                Also consider whether the story is appropriate given the original user input.
+                                
+                                # Story
+                                %s
+                                
+                                # User input that inspired the story
+                                %s
+                                """,
                         reviewWordCount,
                         story.text(),
                         userInput.getContent()
@@ -138,18 +142,18 @@ class WriteAndReviewAgent {
     @Action
     Story craftStory(UserInput userInput) {
         return PromptRunner.usingLlm(
-                 LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE)
-                        .withTemperature(0.9) // Higher temperature for more creative output
-        ).withPromptContributor(Personas.WRITER)
+                        LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE)
+                                .withTemperature(0.9) // Higher temperature for more creative output
+                ).withPromptContributor(Personas.WRITER)
                 .createObject(String.format("""
-                Craft a short story in %d words or less.
-                The story should be engaging and imaginative.
-                Use the user's input as inspiration if possible.
-                If the user has provided a name, include it in the story.
-
-                # User input
-                %s
-                """,
+                                Craft a short story in %d words or less.
+                                The story should be engaging and imaginative.
+                                Use the user's input as inspiration if possible.
+                                If the user has provided a name, include it in the story.
+                                
+                                # User input
+                                %s
+                                """,
                         storyWordCount,
                         userInput.getContent()
                 ).trim(), Story.class);
