@@ -2,6 +2,7 @@ package com.embabel.template.agent;
 
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.testing.unit.FakeOperationContext;
+import com.embabel.agent.testing.unit.FakePromptRunner;
 import com.embabel.agent.testing.unit.UnitTestUtils;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +15,18 @@ class WriteAndReviewAgentTest {
     
     @Test
     void testWriteAndReviewAgent() {
+        var context = FakeOperationContext.create();
+        var promptRunner = (FakePromptRunner) context.promptRunner();
+        context.expectResponse(new Story("One upon a time Sir Galahad . . "));
+
         var agent = new WriteAndReviewAgent(200, 400);
-        var llmCall = UnitTestUtils.captureLlmCall(() -> {
-            agent.craftStory(new UserInput("Tell me a story about a brave knight", Instant.now()));
-        });
-        assertTrue(llmCall.getPrompt().contains("knight"), "Expected prompt to contain 'knight'");
-        assertEquals(0.9, llmCall.getLlm().getTemperature(), 0.01,
+        agent.craftStory(new UserInput("Tell me a story about a brave knight", Instant.now()), context);
+
+        String prompt = promptRunner.getLlmInvocations().getFirst().getPrompt();
+        assertTrue(prompt.contains("knight"), "Expected prompt to contain 'knight'");
+
+        var temp = promptRunner.getLlmInvocations().getFirst().getInteraction().getLlm().getTemperature();
+        assertEquals(0.9, temp, 0.01,
                 "Expected temperature to be 0.9: Higher for more creative output");
     }
 

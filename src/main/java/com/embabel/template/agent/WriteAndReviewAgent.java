@@ -140,12 +140,13 @@ class WriteAndReviewAgent {
     }
 
     @Action
-    Story craftStory(UserInput userInput) {
-        return PromptRunner.usingLlm(
-                        LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE)
-                                .withTemperature(0.9) // Higher temperature for more creative output
-                ).withPromptContributor(Personas.WRITER)
-                .createObject(String.format("""
+    Story craftStory(UserInput userInput, OperationContext context) {
+        PromptRunner runner = context.promptRunner()
+            // Higher temperature for more creative output
+            .withLlm(LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE, 0.9))
+            .withPromptContributor(Personas.WRITER);
+
+        return runner.createObject(String.format("""
                                 Craft a short story in %d words or less.
                                 The story should be engaging and imaginative.
                                 Use the user's input as inspiration if possible.
@@ -154,8 +155,8 @@ class WriteAndReviewAgent {
                                 # User input
                                 %s
                                 """,
-                        storyWordCount,
-                        userInput.getContent()
-                ).trim(), Story.class);
+            storyWordCount,
+            userInput.getContent()
+        ).trim(), Story.class);
     }
 }
