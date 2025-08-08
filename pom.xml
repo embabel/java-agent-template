@@ -69,12 +69,11 @@
             <url>https://repo.embabel.com/artifactory/libs-snapshot</url>
             <releases>
                 <enabled>false</enabled>
-            </releases
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
-
 
 </project>
