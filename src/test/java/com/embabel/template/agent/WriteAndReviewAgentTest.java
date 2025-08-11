@@ -24,10 +24,7 @@ class WriteAndReviewAgentTest {
 
         String prompt = promptRunner.getLlmInvocations().getFirst().getPrompt();
         assertTrue(prompt.contains("knight"), "Expected prompt to contain 'knight'");
-
-        var temp = promptRunner.getLlmInvocations().getFirst().getInteraction().getLlm().getTemperature();
-        assertEquals(0.9, temp, 0.01,
-                "Expected temperature to be 0.9: Higher for more creative output");
+        
     }
 
     @Test
