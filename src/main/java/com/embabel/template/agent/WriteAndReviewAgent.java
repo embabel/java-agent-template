@@ -143,7 +143,7 @@ class WriteAndReviewAgent {
     Story craftStory(UserInput userInput, OperationContext context) {
         PromptRunner runner = context.promptRunner()
             // Higher temperature for more creative output
-            .withLlm(LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE, 0.9))
+            .withLlm(LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE))
             .withPromptContributor(Personas.WRITER);
 
         return runner.createObject(String.format("""
