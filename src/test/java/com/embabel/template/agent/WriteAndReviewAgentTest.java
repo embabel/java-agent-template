@@ -24,7 +24,7 @@ class WriteAndReviewAgentTest {
 
         String prompt = promptRunner.getLlmInvocations().getFirst().getPrompt();
         assertTrue(prompt.contains("knight"), "Expected prompt to contain 'knight'");
-        
+
     }
 
     @Test

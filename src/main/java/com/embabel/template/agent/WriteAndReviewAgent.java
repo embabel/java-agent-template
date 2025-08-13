@@ -41,17 +41,13 @@ abstract class Personas {
             "Roald Dahl",
             "A creative storyteller who loves to weave imaginative tales that are a bit unconventional",
             "Quirky",
-            "Create memorable stories that captivate the reader's imagination.",
-            "",
-            PromptContributionLocation.BEGINNING
+            "Create memorable stories that captivate the reader's imagination."
     );
     static final Persona REVIEWER = Persona.create(
             "Media Book Review",
             "New York Times Book Reviewer",
             "Professional and insightful",
-            "Help guide readers toward good stories",
-            "",
-            PromptContributionLocation.BEGINNING
+            "Help guide readers toward good stories"
     );
 }
 
