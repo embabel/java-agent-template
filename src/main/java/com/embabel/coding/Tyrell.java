@@ -1,11 +1,10 @@
 package com.embabel.coding;
 
 import com.embabel.agent.api.annotation.*;
+import com.embabel.agent.api.common.LlmReference;
 import com.embabel.agent.api.common.OperationContext;
-import com.embabel.agent.api.common.ToolObject;
 import com.embabel.agent.domain.library.code.SoftwareProject;
 import com.embabel.agent.spi.ToolGroupResolver;
-import com.embabel.agent.tools.common.LlmReference;
 import com.embabel.coding.tools.api.ApiReference;
 import com.embabel.coding.tools.git.RepositoryReferenceProvider;
 import com.embabel.coding.tools.jvm.ClassGraphApiReferenceExtractor;
@@ -42,6 +41,7 @@ public class Tyrell {
                 .cloneRepository("https://github.com/embabel/embabel-agent-examples.git");
         references.add(embabelApiReference);
         references.add(examplesReference);
+        references.add(softwareProject);
     }
 
 
@@ -77,16 +77,12 @@ public class Tyrell {
     public AgentCreationResult createAgent(AgentCreationRequest request, OperationContext embabel) {
         return embabel.ai()
                 .withLlm(config.codingLlm)
-                .withPromptElements(references)
-                // TODO need withToolObjects method in API
-                .withToolObject(new ToolObject(references.get(0)).withNamingStrategy(n -> "api_ref_" + n))
-                .withToolObject(new ToolObject(references.get(1)).withNamingStrategy(n -> "examples_repo_" + n))
-                .withToolObject(new ToolObject(softwareProject).withNamingStrategy(n -> "this_project_" + n))
-                .withPromptElements(softwareProject)
+                .withReferences(references)
                 .withTemplate("coding/creator")
                 .createObject(
                         AgentCreationResult.class,
                         Map.of(
+                                "thisProject", softwareProject.getName().replace("-", "_"),
                                 "package", request.pkg(),
                                 "purpose", request.purpose(),
                                 "toolGroups", toolGroupResolver.availableToolGroups()

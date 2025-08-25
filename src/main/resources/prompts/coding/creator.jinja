@@ -1,30 +1,28 @@
 Create a new Embabel agent in Java within this project.
 This project uses normal Maven conventions.
 
-The package should be {{ pgk }}
-
-The purpose of the agent is {{ purpose }}.
-
-Choose an appropriate class name. Refer to API documentation and examples for how to build an agent.
+Choose an appropriate class name within the package.
+Refer to API documentation and examples for how to build an agent.
 
 Start by considering the data flow between the agent's @Action methods.
 These types should be captured in records.
 
 For each @Action method, consider what tool groups may be required.
 Be parsimonious in your choice of tool groups, including only what's necessary.
-The available tool groups are:
-
-{% for tool_group in tool_groups %}
-    - {{ tool_group.role }}: {{ tool_group.description }}
+The available tool groups are the following (use the role string in code for withToolGroup):
+Role | Description
+---- | -----------
+{% for group in toolGroups %}
+    {{ group.role }} | {{ group.description }}
 {% endfor %}
 
 Ue modern Java with vars and records.
 
 Use the build tool to check that your build works and fix it if it doesn't.
 
-You should also create the following artifacts:
-
-1. Unit test for the new agent. Use WriteAndReviewAgentTest in this repository as a guide
+{#You should also create the following artifacts:#}
+{##}
+{#1. Unit test for the new agent. Use WriteAndReviewAgentTest in this repository as a guide#}
 
 {#2. Integration test for the new agent. Use#}
 
@@ -33,7 +31,18 @@ DO NOT MODIFY ANY FILES BESIDES THE NEW FILES YOU'VE CREATED
 DO NOT MODIFY THE pom.xml
 
 Tools provided will give you access to reference repositories.
-The tool names beginning with "this_project_" will give you access to this repository
+The tool names beginning with "{{ thisProject }}" will give you access to this repository
+
+This project uses normal Maven project structure, you will add source code under src/main/java and tests under src/test/java.
+Note that the examples repo has a different structure.
 
 Create the simplest possible implementation that meets the requirements.
-Do not invent extra steps.
+Do not invent extra steps or actions.
+
+# PACKAGE
+
+The package should be {{ package }}
+
+# PURPOSE OF THE AGENT
+
+{{ purpose }}
