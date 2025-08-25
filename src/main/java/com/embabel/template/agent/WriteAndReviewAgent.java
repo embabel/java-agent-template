@@ -20,13 +20,10 @@ import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
 import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.OperationContext;
-import com.embabel.agent.api.common.PromptRunner;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.domain.library.HasContent;
 import com.embabel.agent.prompt.persona.Persona;
-import com.embabel.common.ai.model.AutoModelSelectionCriteria;
 import com.embabel.common.ai.model.LlmOptions;
-import com.embabel.common.ai.prompt.PromptContributionLocation;
 import com.embabel.common.core.types.Timestamped;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -108,8 +105,9 @@ class WriteAndReviewAgent {
             export = @Export(remote = true, name = "writeAndReviewStory"))
     @Action
     ReviewedStory reviewStory(UserInput userInput, Story story, OperationContext context) {
-        String review = context.promptRunner()
-                .withLlm(LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE))
+        var review = context
+                .ai()
+                .withAutoLlm()
                 .withPromptContributor(Personas.REVIEWER)
                 .generateText(String.format("""
                                 You will be given a short story to review.
@@ -137,12 +135,11 @@ class WriteAndReviewAgent {
 
     @Action
     Story craftStory(UserInput userInput, OperationContext context) {
-        PromptRunner runner = context.promptRunner()
-            // Higher temperature for more creative output
-            .withLlm(LlmOptions.fromCriteria(AutoModelSelectionCriteria.INSTANCE))
-            .withPromptContributor(Personas.WRITER);
-
-        return runner.createObject(String.format("""
+        return context.ai()
+                // Higher temperature for more creative output
+                .withLlm(LlmOptions.withAutoLlm().withTemperature(.7))
+                .withPromptContributor(Personas.WRITER)
+                .createObject(String.format("""
                                 Craft a short story in %d words or less.
                                 The story should be engaging and imaginative.
                                 Use the user's input as inspiration if possible.
@@ -151,8 +148,8 @@ class WriteAndReviewAgent {
                                 # User input
                                 %s
                                 """,
-            storyWordCount,
-            userInput.getContent()
-        ).trim(), Story.class);
+                        storyWordCount,
+                        userInput.getContent()
+                ).trim(), Story.class);
     }
 }
