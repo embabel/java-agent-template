@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.contains;
  * This will run under Spring Boot against an AgentPlatform instance
  * that has loaded all our agents.
  */
-class StoryWriterIntegrationTest extends EmbabelMockitoIntegrationTest {
+class WriteAndReviewAgentIntegrationTest extends EmbabelMockitoIntegrationTest {
 
     @Test
     void shouldExecuteCompleteWorkflow() {
@@ -39,7 +39,7 @@ class StoryWriterIntegrationTest extends EmbabelMockitoIntegrationTest {
                 "Expected review to match: " + reviewedStoryResult);
 
         verifyCreateObjectMatching(prompt -> prompt.contains("Craft a short story"), Story.class,
-                llm -> llm.getLlm().getTemperature() == 0.9 && llm.getToolGroups().isEmpty());
+                llm -> llm.getLlm().getTemperature() == 0.7 && llm.getToolGroups().isEmpty());
         verifyGenerateTextMatching(prompt -> prompt.contains("You will be given a short story to review"));
         verifyNoMoreInteractions();
     }
