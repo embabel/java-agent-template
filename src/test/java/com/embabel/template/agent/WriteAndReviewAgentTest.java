@@ -3,16 +3,14 @@ package com.embabel.template.agent;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.testing.unit.FakeOperationContext;
 import com.embabel.agent.testing.unit.FakePromptRunner;
-import com.embabel.agent.testing.unit.UnitTestUtils;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WriteAndReviewAgentTest {
-    
+
     @Test
     void testWriteAndReviewAgent() {
         var context = FakeOperationContext.create();

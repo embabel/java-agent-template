@@ -1,4 +1,4 @@
-package com.embabel.template;
+package com.embabel;
 
 import com.embabel.template.injected.InjectedDemo;
 import org.springframework.shell.standard.ShellComponent;
