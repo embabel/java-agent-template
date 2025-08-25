@@ -10,6 +10,14 @@ Choose an appropriate class name. Refer to API documentation and examples for ho
 Start by considering the data flow between the agent's @Action methods.
 These types should be captured in records.
 
+For each @Action method, consider what tool groups may be required.
+Be parsimonious in your choice of tool groups, including only what's necessary.
+The available tool groups are:
+
+{% for tool_group in tool_groups %}
+    - {{ tool_group.role }}: {{ tool_group.description }}
+{% endfor %}
+
 Ue modern Java with vars and records.
 
 Use the build tool to check that your build works and fix it if it doesn't.
@@ -26,3 +34,6 @@ DO NOT MODIFY THE pom.xml
 
 Tools provided will give you access to reference repositories.
 The tool names beginning with "this_project_" will give you access to this repository
+
+Create the simplest possible implementation that meets the requirements.
+Do not invent extra steps.

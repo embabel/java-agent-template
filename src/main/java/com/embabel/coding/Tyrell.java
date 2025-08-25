@@ -4,6 +4,7 @@ import com.embabel.agent.api.annotation.*;
 import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.api.common.ToolObject;
 import com.embabel.agent.domain.library.code.SoftwareProject;
+import com.embabel.agent.spi.ToolGroupResolver;
 import com.embabel.agent.tools.common.LlmReference;
 import com.embabel.coding.tools.api.ApiReference;
 import com.embabel.coding.tools.git.RepositoryReferenceProvider;
@@ -21,13 +22,16 @@ import java.util.Set;
 public class Tyrell {
 
     private final Config config;
+    private final ToolGroupResolver toolGroupResolver;
 
     private final List<LlmReference> references = new LinkedList<>();
 
     private final SoftwareProject softwareProject = new SoftwareProject(System.getProperty("user.dir"));
 
-    public Tyrell(Config config) {
+    public Tyrell(Config config, ToolGroupResolver toolGroupResolver) {
         this.config = config;
+        this.toolGroupResolver = toolGroupResolver;
+
         var embabelApiReference = new ApiReference(
                 new ClassGraphApiReferenceExtractor().fromProjectClasspath(
                         "embabel-agent",
@@ -56,6 +60,9 @@ public class Tyrell {
     public record AgentCreationResult(String summary) {
     }
 
+    public record ToolGroups(List<String> toolGroups) {
+    }
+
     @Action
     AgentCreationRequest requestAgentDetails() {
         return WaitFor.formSubmission(
@@ -81,7 +88,8 @@ public class Tyrell {
                         AgentCreationResult.class,
                         Map.of(
                                 "package", request.pkg(),
-                                "purpose", request.purpose()
+                                "purpose", request.purpose(),
+                                "toolGroups", toolGroupResolver.availableToolGroups()
                         ));
     }
 }
