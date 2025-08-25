@@ -33,7 +33,8 @@
         <dependency>
             <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-test</artifactId>
-            <version>${embabel-agent.version}</version>
+            <!-- This is later than agent version, but will come back in sync in future -->
+            <version>0.1.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
