@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.template;
+package com.embabel;
 
 import com.embabel.agent.config.annotation.EnableAgentShell;
 import com.embabel.agent.config.annotation.EnableAgents;
