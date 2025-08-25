@@ -26,6 +26,8 @@ Add your magic here!
 
 Illustrates:
 
+- An injected demo showing how any Spring component can be injected with an Embabel `Ai` instance to enable it to
+  perform LLM operations.
 - A simple agent
 - Unit tests for an agent verifying prompts and hyperparameters
 
@@ -45,6 +47,12 @@ When the Embabel shell comes up, use the story agent like this:
 
 ```
 x "Tell me a story about...[your topic]"
+```
+
+Try the `InjectedDemo` command to see simple, non-agent use:
+
+```java
+animal
 ```
 
 ## A2A Support

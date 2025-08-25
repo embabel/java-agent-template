@@ -23,6 +23,7 @@ import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.domain.library.HasContent;
 import com.embabel.agent.prompt.persona.Persona;
+import com.embabel.agent.prompt.persona.RoleGoalBackstory;
 import com.embabel.common.ai.model.LlmOptions;
 import com.embabel.common.core.types.Timestamped;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,12 +35,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 abstract class Personas {
-    static final Persona WRITER = Persona.create(
-            "Roald Dahl",
-            "A creative storyteller who loves to weave imaginative tales that are a bit unconventional",
-            "Quirky",
-            "Create memorable stories that captivate the reader's imagination."
-    );
+    static final RoleGoalBackstory WRITER = RoleGoalBackstory
+            .withRole("Creative Storyteller")
+            .andGoal("Write engaging and imaginative stories")
+            .andBackstory("Has a PhD in French literature; used to work in a circus");
+
     static final Persona REVIEWER = Persona.create(
             "Media Book Review",
             "New York Times Book Reviewer",
