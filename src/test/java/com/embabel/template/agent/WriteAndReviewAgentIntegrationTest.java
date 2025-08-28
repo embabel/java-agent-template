@@ -6,7 +6,6 @@ import com.embabel.agent.testing.integration.EmbabelMockitoIntegrationTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.contains;
 
 /**
  * Use framework superclass to test the complete workflow of writing and reviewing a story.
@@ -22,11 +21,11 @@ class WriteAndReviewAgentIntegrationTest extends EmbabelMockitoIntegrationTest {
         var story = new Story("AI will transform our world...");
         var reviewedStory = new ReviewedStory(story, "Excellent exploration of AI themes.", Personas.REVIEWER);
 
-        whenCreateObject(contains("Craft a short story"), Story.class)
+        whenCreateObject(prompt -> prompt.contains("Craft a short story"), Story.class)
                 .thenReturn(story);
 
         // The second call uses generateText
-        whenGenerateText(contains("You will be given a short story to review"))
+        whenGenerateText(prompt -> prompt.contains("You will be given a short story to review"))
                 .thenReturn(reviewedStory.review());
 
         var invocation = AgentInvocation.create(agentPlatform, ReviewedStory.class);
