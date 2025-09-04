@@ -4,6 +4,7 @@ import com.embabel.agent.api.common.autonomy.AgentInvocation;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.testing.integration.EmbabelMockitoIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * that has loaded all our agents.
  */
 class WriteAndReviewAgentIntegrationTest extends EmbabelMockitoIntegrationTest {
+
+    @BeforeAll
+    static void setUp() {
+        // Set shell configuration to non-interactive mode
+        System.setProperty("embabel.agent.shell.interactive.enabled", "false");
+    }
 
     @Test
     void shouldExecuteCompleteWorkflow() {
