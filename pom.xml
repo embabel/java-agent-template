@@ -26,12 +26,6 @@
         <!-- Main Dependencies -->
         <dependency>
             <groupId>com.embabel.agent</groupId>
-            <artifactId>embabel-agent-starter</artifactId>
-            <version>${embabel-agent.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-starter-shell</artifactId>
             <version>${embabel-agent.version}</version>
         </dependency>
