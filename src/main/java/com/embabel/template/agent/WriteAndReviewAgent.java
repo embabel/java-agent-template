@@ -138,7 +138,9 @@ class WriteAndReviewAgent {
     Story craftStory(UserInput userInput, OperationContext context) {
         return context.ai()
                 // Higher temperature for more creative output
-                .withLlm(LlmOptions.withModel(OpenAiModels.GPT_5).withTemperature(.7))
+                .withLlm(LlmOptions
+                        .withModel(OpenAiModels.GPT_41_MINI)
+                        .withTemperature(.7))
                 .withPromptContributor(Personas.WRITER)
                 .createObject(String.format("""
                                 Craft a short story in %d words or less.
