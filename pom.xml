@@ -36,6 +36,13 @@
             <version>${embabel-agent.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-test</artifactId>
+            <version>${embabel-agent.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <!-- Unit and Integration Testing -->
         <dependency>
