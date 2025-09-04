@@ -20,6 +20,7 @@ import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
 import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.OperationContext;
+import com.embabel.agent.config.models.OpenAiModels;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.domain.library.HasContent;
 import com.embabel.agent.prompt.persona.Persona;
@@ -40,7 +41,7 @@ abstract class Personas {
             .andGoal("Write engaging and imaginative stories")
             .andBackstory("Has a PhD in French literature; used to work in a circus");
 
-    static final Persona REVIEWER = Persona.create(
+    static final Persona REVIEWER = new Persona(
             "Media Book Review",
             "New York Times Book Reviewer",
             "Professional and insightful",
@@ -137,7 +138,7 @@ class WriteAndReviewAgent {
     Story craftStory(UserInput userInput, OperationContext context) {
         return context.ai()
                 // Higher temperature for more creative output
-                .withLlm(LlmOptions.withAutoLlm().withTemperature(.7))
+                .withLlm(LlmOptions.withModel(OpenAiModels.GPT_5).withTemperature(.7))
                 .withPromptContributor(Personas.WRITER)
                 .createObject(String.format("""
                                 Craft a short story in %d words or less.
