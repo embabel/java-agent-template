@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- Lookup parent from repository -->
     </parent>
     <groupId>com.embabel.template</groupId>
@@ -18,7 +18,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <embabel-agent.version>0.1.1</embabel-agent.version>
+        <embabel-agent.version>0.1.2</embabel-agent.version>
     </properties>
 
     <dependencies>
@@ -28,6 +28,19 @@
             <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-starter</artifactId>
             <version>${embabel-agent.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-starter-shell</artifactId>
+            <version>${embabel-agent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-test</artifactId>
+            <version>${embabel-agent.version}</version>
+            <scope>test</scope>
         </dependency>
 
 
