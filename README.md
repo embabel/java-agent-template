@@ -28,6 +28,7 @@ Illustrates:
 
 - An injected demo showing how any Spring component can be injected with an Embabel `Ai` instance to enable it to
   perform LLM operations.
+- A configuration bean demonstrating how to integrate OpenAI-compatible models (Gemini) with conditional loading based on environment variables.
 - A simple agent
 - Unit tests for an agent verifying prompts and hyperparameters
 
@@ -54,6 +55,8 @@ Try the `InjectedDemo` command to see simple, non-agent use:
 ```java
 animal
 ```
+
+The `GeminiOpenAIModels` configuration demonstrates how to integrate Google's Gemini models using OpenAI's compatible API interface. This configuration registers two Gemini models (`gemini-2.0-flash` and `gemini-2.5-flash`) as LLM beans that can be used throughout your Embabel agents. The configuration is conditionally loaded only when the `GEMINI_API_KEY` environment variable is present, showcasing how to implement optional model providers that don't interfere with your application when credentials aren't available.
 
 ## A2A Support
 
