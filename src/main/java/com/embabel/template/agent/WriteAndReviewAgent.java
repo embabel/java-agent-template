@@ -20,7 +20,6 @@ import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
 import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.OperationContext;
-import com.embabel.agent.config.models.OpenAiModels;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.domain.library.HasContent;
 import com.embabel.agent.prompt.persona.Persona;
@@ -139,7 +138,7 @@ class WriteAndReviewAgent {
         return context.ai()
                 // Higher temperature for more creative output
                 .withLlm(LlmOptions
-                        .withModel(OpenAiModels.GPT_41_MINI)
+                        .withAutoLlm()
                         .withTemperature(.7))
                 .withPromptContributor(Personas.WRITER)
                 .createObject(String.format("""
