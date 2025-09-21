@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-export AGENT_APPLICATION=..
+script_dir=$(dirname "$0")
 
-#export MAVEN_PROFILE=enable-mcp
+export AGENT_APPLICATION="${script_dir}/.."
 
-./support/check_env.sh || exit 1
-
-cd ..
-mvn -Dmaven.test.skip=true spring-boot:run
+"$script_dir/support/agent.sh"
