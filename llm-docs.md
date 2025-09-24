@@ -3,7 +3,7 @@
 This guide describes how to integrate Embabel with different LLM providers; by default Embabel runs with OpenAI
 but you can configure other providers.
 
-Embabel uses Spring AI and you can find [detailed documentation here](https://docs.spring.io/spring-ai/reference/api/index.html).
+Embabel uses Spring AI and you can find detailed documentation [here](https://docs.spring.io/spring-ai/reference/api/index.html).
 
 # Amazon Bedrock
 
@@ -63,5 +63,5 @@ After configuration, run the project using:
 
 ## Additional Links
 
-[Spring AI and Amazon Bedrock documentation]([https://docs.spring.io/spring-ai/reference/api/bedrock.html])
+Spring AI and Amazon Bedrock [documentation]([https://docs.spring.io/spring-ai/reference/api/bedrock.html])
 
