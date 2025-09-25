@@ -48,46 +48,47 @@ abstract class Personas {
     );
 }
 
-record Story(String text) {
-}
-
-record ReviewedStory(
-        Story story,
-        String review,
-        Persona reviewer
-) implements HasContent, Timestamped {
-
-    @Override
-    @NonNull
-    public Instant getTimestamp() {
-        return Instant.now();
-    }
-
-    @Override
-    @NonNull
-    public String getContent() {
-        return String.format("""
-                        # Story
-                        %s
-                        
-                        # Review
-                        %s
-                        
-                        # Reviewer
-                        %s, %s
-                        """,
-                story.text(),
-                review,
-                reviewer.getName(),
-                getTimestamp().atZone(ZoneId.systemDefault())
-                        .format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy"))
-        ).trim();
-    }
-}
 
 @Agent(description = "Generate a story based on user input and review it")
 @Profile("!test")
-class WriteAndReviewAgent {
+public class WriteAndReviewAgent {
+
+    public record Story(String text) {
+    }
+
+    public record ReviewedStory(
+            Story story,
+            String review,
+            Persona reviewer
+    ) implements HasContent, Timestamped {
+
+        @Override
+        @NonNull
+        public Instant getTimestamp() {
+            return Instant.now();
+        }
+
+        @Override
+        @NonNull
+        public String getContent() {
+            return String.format("""
+                            # Story
+                            %s
+                            
+                            # Review
+                            %s
+                            
+                            # Reviewer
+                            %s, %s
+                            """,
+                    story.text(),
+                    review,
+                    reviewer.getName(),
+                    getTimestamp().atZone(ZoneId.systemDefault())
+                            .format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy"))
+            ).trim();
+        }
+    }
 
     private final int storyWordCount;
     private final int reviewWordCount;

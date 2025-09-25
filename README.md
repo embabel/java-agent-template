@@ -40,7 +40,8 @@ Run the shell script to start Embabel under Spring Shell:
 ./scripts/shell.sh
 ```
 
-There is a single example agent, `WriteAndReviewAgent`.
+There is a single example
+agent, [WriteAndReviewAgent](./src/main/java/com/embabel/template/agent/WriteAndReviewAgent.java).
 It uses one LLM with a high temperature and creative persona to write a story based on your input,
 then another LLM with a low temperature and different persona to review the story.
 
@@ -50,13 +51,13 @@ When the Embabel shell comes up, invoke the story agent like this:
 x "Tell me a story about...[your topic]"
 ```
 
-Try the `InjectedDemo` command to see simple, non-agent use.
-Type this in the interactive shell to see a single prompt create
-an imaginary animal:
+Try the following other shell commands:
 
-```java
-animal
-```
+- `demo`: Runs the same agent, invoked programmatically, instead of dynamically based on user input.
+  See [DemoCommands.java](./src/main/java/com/embabel/template/DemoShell.java) for the
+  implementation.
+- `animal`:  Runs a simple demo using an Embabel injected `Ai` instance to call an LLM.
+  See [InjectedDemo](./src/main/java/com/embabel/template/injected/InjectedDemo.java).
 
 ## Suggested Next Steps
 

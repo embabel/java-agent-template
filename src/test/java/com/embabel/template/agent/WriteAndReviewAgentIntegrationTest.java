@@ -3,8 +3,8 @@ package com.embabel.template.agent;
 import com.embabel.agent.api.common.autonomy.AgentInvocation;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.testing.integration.EmbabelMockitoIntegrationTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,17 +25,17 @@ class WriteAndReviewAgentIntegrationTest extends EmbabelMockitoIntegrationTest {
     void shouldExecuteCompleteWorkflow() {
         var input = new UserInput("Write about artificial intelligence");
 
-        var story = new Story("AI will transform our world...");
-        var reviewedStory = new ReviewedStory(story, "Excellent exploration of AI themes.", Personas.REVIEWER);
+        var story = new WriteAndReviewAgent.Story("AI will transform our world...");
+        var reviewedStory = new WriteAndReviewAgent.ReviewedStory(story, "Excellent exploration of AI themes.", Personas.REVIEWER);
 
-        whenCreateObject(prompt -> prompt.contains("Craft a short story"), Story.class)
+        whenCreateObject(prompt -> prompt.contains("Craft a short story"), WriteAndReviewAgent.Story.class)
                 .thenReturn(story);
 
         // The second call uses generateText
         whenGenerateText(prompt -> prompt.contains("You will be given a short story to review"))
                 .thenReturn(reviewedStory.review());
 
-        var invocation = AgentInvocation.create(agentPlatform, ReviewedStory.class);
+        var invocation = AgentInvocation.create(agentPlatform, WriteAndReviewAgent.ReviewedStory.class);
         var reviewedStoryResult = invocation.invoke(input);
 
         assertNotNull(reviewedStoryResult);
@@ -44,7 +44,7 @@ class WriteAndReviewAgentIntegrationTest extends EmbabelMockitoIntegrationTest {
         assertEquals(reviewedStory, reviewedStoryResult,
                 "Expected review to match: " + reviewedStoryResult);
 
-        verifyCreateObjectMatching(prompt -> prompt.contains("Craft a short story"), Story.class,
+        verifyCreateObjectMatching(prompt -> prompt.contains("Craft a short story"), WriteAndReviewAgent.Story.class,
                 llm -> llm.getLlm().getTemperature() == 0.7 && llm.getToolGroups().isEmpty());
         verifyGenerateTextMatching(prompt -> prompt.contains("You will be given a short story to review"));
         verifyNoMoreInteractions();
