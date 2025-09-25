@@ -1,6 +1,6 @@
 <img align="left" src="https://github.com/embabel/embabel-agent/blob/main/embabel-agent-api/images/315px-Meister_der_Weltenchronik_001.jpg?raw=true" width="180">
 
-![Build](https://github.com/embabel/embabel-agent/actions/workflows/maven.yml/badge.svg)
+![Build](https://github.com/embabel/java-agent-template/actions/workflows/maven.yml/badge.svg)
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
@@ -66,6 +66,9 @@ To get a feel for working with Embabel, try the following:
 - Experiment with different models and hyperparameters by modifying `withLlm` calls.
 - Integrate your own services, injecting them with Spring. All Embabel `@Agent` classes are Spring beans.
 - Run the tests with `mvn test` and modify them to experiment with prompt verification.
+
+To see tool support, check out the more
+complex [Embabel Agent API Examples](https://github.com/embabel/embabel-agent-examples) repository.
 
 ## Model support
 
