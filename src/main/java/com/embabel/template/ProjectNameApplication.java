@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel;
+package com.embabel.template;
 
 import com.embabel.agent.config.annotation.EnableAgents;
 import com.embabel.agent.config.annotation.LoggingThemes;
