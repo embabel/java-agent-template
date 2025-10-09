@@ -139,12 +139,9 @@ public class WriteAndReviewAgent {
         return context.ai()
                 // Higher temperature for more creative output
                 .withLlm(LlmOptions
-                        .withAutoLlm()
-                        // You can also use a specific model here
-//                 .withModel(OpenAiModels.GPT_41_MINI)
-                        // Or specify a "role" you've configured in application.properties
-//                        .withLlmForRole("best")
-                        .withTemperature(.7))
+                        .withAutoLlm() // You can also choose a specific model or role here
+                        .withTemperature(.7)
+                )
                 .withPromptContributor(Personas.WRITER)
                 .createObject(String.format("""
                                 Craft a short story in %d words or less.
