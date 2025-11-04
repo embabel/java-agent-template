@@ -17,6 +17,7 @@ public record InjectedDemo(Ai ai) {
     public Animal inventAnimal() {
         return ai
                 .withDefaultLlm()
+                .withId("invent-animal")
                 .createObject("""
                                 You just woke up in a magical forest.
                                 Invent a fictional animal.
