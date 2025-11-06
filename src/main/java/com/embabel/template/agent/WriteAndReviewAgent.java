@@ -19,7 +19,7 @@ import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
 import com.embabel.agent.api.annotation.Export;
-import com.embabel.agent.api.common.OperationContext;
+import com.embabel.agent.api.common.Ai;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.domain.library.HasContent;
 import com.embabel.agent.prompt.persona.Persona;
@@ -105,9 +105,8 @@ public class WriteAndReviewAgent {
             description = "The story has been crafted and reviewed by a book reviewer",
             export = @Export(remote = true, name = "writeAndReviewStory"))
     @Action
-    ReviewedStory reviewStory(UserInput userInput, Story story, OperationContext context) {
-        var review = context
-                .ai()
+    ReviewedStory reviewStory(UserInput userInput, Story story, Ai ai) {
+        var review = ai
                 .withAutoLlm()
                 .withPromptContributor(Personas.REVIEWER)
                 .generateText(String.format("""
@@ -135,8 +134,8 @@ public class WriteAndReviewAgent {
     }
 
     @Action
-    Story craftStory(UserInput userInput, OperationContext context) {
-        return context.ai()
+    Story craftStory(UserInput userInput, Ai ai) {
+        return ai
                 // Higher temperature for more creative output
                 .withLlm(LlmOptions
                         .withAutoLlm() // You can also choose a specific model or role here
