@@ -1,6 +1,7 @@
 package com.embabel.template.injected;
 
 import com.embabel.agent.api.common.Ai;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public record InjectedDemo(Ai ai) {
 
-    public record Animal(String name, String species) {
+    /**
+     * Demonstrates use of JSR-380 validation annotations on record fields
+     * to constrain generated content.
+     */
+    public record Animal(
+            String name,
+            @Pattern(regexp = ".*ox.*", message = "Species must contain 'ox'")
+            String species) {
     }
 
     public Animal inventAnimal() {
