@@ -18,7 +18,7 @@ class WriteAndReviewAgentTest {
         context.expectResponse(new WriteAndReviewAgent.Story("One upon a time Sir Galahad . . "));
 
         var agent = new WriteAndReviewAgent(200, 400);
-        var story = agent.craftStory(new UserInput("Tell me a story about a brave knight", Instant.now()), context);
+        var story = agent.craftStory(new UserInput("Tell me a story about a brave knight", Instant.now()), context.ai());
 
         var prompt = promptRunner.getLlmInvocations().getFirst().getMessages().getFirst().getContent();
         assertTrue(prompt.contains("knight"), "Expected prompt to contain 'knight'");
@@ -32,7 +32,7 @@ class WriteAndReviewAgentTest {
         var story = new WriteAndReviewAgent.Story("Once upon a time, Sir Galahad...");
         var context = FakeOperationContext.create();
         context.expectResponse("A thrilling tale of bravery and adventure!");
-        var review = agent.reviewStory(userInput, story, context);
+        var review = agent.reviewStory(userInput, story, context.ai());
         var llmInvocation = context.getLlmInvocations().getFirst();
         var prompt = llmInvocation.getMessages().getFirst().getContent();
         assertTrue(prompt.contains("knight"), "Expected prompt to contain 'knight'");
