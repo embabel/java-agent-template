@@ -15,10 +15,7 @@
  */
 package com.embabel.template.agent;
 
-import com.embabel.agent.api.annotation.AchievesGoal;
-import com.embabel.agent.api.annotation.Action;
-import com.embabel.agent.api.annotation.Agent;
-import com.embabel.agent.api.annotation.Export;
+import com.embabel.agent.api.annotation.*;
 import com.embabel.agent.api.common.Ai;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.agent.domain.library.HasContent;
@@ -90,52 +87,29 @@ public class WriteAndReviewAgent {
         }
     }
 
-    private final int storyWordCount;
-    private final int reviewWordCount;
+    @State
+    interface Stage {
+    }
+    
+    record Properties(
+            int storyWordCount,
+            int reviewWordCount
+    ) {
+    }
+
+    private final Properties properties;
 
     WriteAndReviewAgent(
             @Value("${storyWordCount:100}") int storyWordCount,
             @Value("${reviewWordCount:100}") int reviewWordCount
     ) {
-        this.storyWordCount = storyWordCount;
-        this.reviewWordCount = reviewWordCount;
+        this.properties = new Properties(storyWordCount, reviewWordCount);
     }
 
-    @AchievesGoal(
-            description = "The story has been crafted and reviewed by a book reviewer",
-            export = @Export(remote = true, name = "writeAndReviewStory"))
-    @Action
-    ReviewedStory reviewStory(UserInput userInput, Story story, Ai ai) {
-        var review = ai
-                .withAutoLlm()
-                .withPromptContributor(Personas.REVIEWER)
-                .generateText(String.format("""
-                                You will be given a short story to review.
-                                Review it in %d words or less.
-                                Consider whether or not the story is engaging, imaginative, and well-written.
-                                Also consider whether the story is appropriate given the original user input.
-                                
-                                # Story
-                                %s
-                                
-                                # User input that inspired the story
-                                %s
-                                """,
-                        reviewWordCount,
-                        story.text(),
-                        userInput.getContent()
-                ).trim());
-
-        return new ReviewedStory(
-                story,
-                review,
-                Personas.REVIEWER
-        );
-    }
 
     @Action
-    Story craftStory(UserInput userInput, Ai ai) {
-        return ai
+    AssessStory craftStory(UserInput userInput, Ai ai) {
+        var draft = ai
                 // Higher temperature for more creative output
                 .withLlm(LlmOptions
                         .withAutoLlm() // You can also choose a specific model or role here
@@ -151,8 +125,135 @@ public class WriteAndReviewAgent {
                                 # User input
                                 %s
                                 """,
-                        storyWordCount,
+                        properties.storyWordCount,
                         userInput.getContent()
                 ).trim(), Story.class);
+        return new AssessStory(userInput, draft, properties);
     }
+
+    /**
+     * We prompt the user for this
+     *
+     * @param comments
+     */
+    record HumanFeedback(String comments) {
+    }
+
+    private record AssessmentOfHumanFeedback(boolean acceptable) {
+    }
+
+    @State
+    record AssessStory(UserInput userInput, Story story, Properties properties) implements Stage {
+
+        @Action
+        HumanFeedback getFeedback() {
+            return WaitFor.formSubmission("""
+                            Please provide feedback on the story
+                            %s
+                            """.formatted(story.text),
+                    HumanFeedback.class);
+        }
+
+        @Action
+        Stage assess(HumanFeedback feedback, Ai ai) {
+            var assessment = ai.withDefaultLlm().createObject("""
+                                    Based on the following human feedback, determine if the story is acceptable.
+                                    Return true if the story is acceptable, false otherwise.
+                            
+                                    # Story
+                                    %s
+                            
+                                    # Human feedback
+                                    %s
+                            
+                            
+                                    Return your answer as a JSON object with a single field "acceptable" set to true or false.
+                            """.formatted(
+                            story.text(),
+                            feedback.comments
+                    )
+                    , AssessmentOfHumanFeedback.class);
+            if (assessment.acceptable) {
+                return new Done(userInput, story, properties);
+            } else {
+                return new ReviseStory(userInput, story, feedback, properties);
+            }
+        }
+
+    }
+
+    @State
+    record ReviseStory(UserInput userInput, Story story, HumanFeedback humanFeedback,
+                       Properties properties) implements Stage {
+
+        @Action
+        AssessStory reviseStory(Ai ai) {
+            var draft = ai
+                    // Higher temperature for more creative output
+                    .withLlm(LlmOptions
+                            .withAutoLlm() // You can also choose a specific model or role here
+                            .withTemperature(.7)
+                    )
+                    .withPromptContributor(Personas.WRITER)
+                    .createObject(String.format("""
+                                    Revise a short story in %d words or less.
+                                    The story should be engaging and imaginative.
+                                    Use the user's input as inspiration if possible.
+                                    If the user has provided a name, include it in the story.
+                                    
+                                    # User input
+                                    %s
+                                    
+                                    # Previous story
+                                    %s
+                                    
+                                    # Revision instructions
+                                    %s
+                                    """,
+                            properties.storyWordCount,
+                            userInput.getContent(),
+                            story.text(),
+                            humanFeedback.comments
+                    ).trim(), Story.class);
+            return new AssessStory(userInput, draft, properties);
+        }
+    }
+
+    @State
+    record Done(UserInput userInput, Story story, Properties properties) implements Stage {
+
+        @AchievesGoal(
+                description = "The story has been crafted and reviewed by a book reviewer",
+                export = @Export(remote = true, name = "writeAndReviewStory"))
+        @Action
+        ReviewedStory reviewStory(Ai ai) {
+            var review = ai
+                    .withAutoLlm()
+                    .withPromptContributor(Personas.REVIEWER)
+                    .generateText(String.format("""
+                                    You will be given a short story to review.
+                                    Review it in %d words or less.
+                                    Consider whether or not the story is engaging, imaginative, and well-written.
+                                    Also consider whether the story is appropriate given the original user input.
+                                    
+                                    # Story
+                                    %s
+                                    
+                                    # User input that inspired the story
+                                    %s
+                                    """,
+                            properties.reviewWordCount,
+                            story.text(),
+                            userInput.getContent()
+                    ).trim());
+
+            return new ReviewedStory(
+                    story,
+                    review,
+                    Personas.REVIEWER
+            );
+        }
+    }
+
+
 }
