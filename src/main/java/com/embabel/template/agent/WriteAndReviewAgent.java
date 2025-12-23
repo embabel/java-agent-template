@@ -27,7 +27,6 @@ import com.embabel.agent.prompt.persona.RoleGoalBackstory;
 import com.embabel.common.ai.model.LlmOptions;
 import com.embabel.common.core.types.Timestamped;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.lang.NonNull;
 
 import java.time.Instant;
@@ -40,7 +39,7 @@ abstract class Personas {
             .andGoal("Write engaging and imaginative stories")
             .andBackstory("Has a PhD in French literature; used to work in a circus");
 
-    static final Persona REVIEWER = new Persona(
+    static final Persona REVIEWER = Persona.create(
             "Media Book Review",
             "New York Times Book Reviewer",
             "Professional and insightful",
@@ -50,7 +49,6 @@ abstract class Personas {
 
 
 @Agent(description = "Generate a story based on user input and review it")
-@Profile("!test")
 public class WriteAndReviewAgent {
 
     public record Story(String text) {

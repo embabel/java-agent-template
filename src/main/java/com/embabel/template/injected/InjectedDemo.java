@@ -26,11 +26,13 @@ public record InjectedDemo(Ai ai) {
         return ai
                 .withDefaultLlm()
                 .withId("invent-animal")
-                .createObject("""
-                                You just woke up in a magical forest.
-                                Invent a fictional animal.
-                                The animal should have a name and a species.
-                                """,
-                        Animal.class);
+                .creating(Animal.class)
+                .withExample("good example", new Animal("Fluffox", "Magicox"))
+                .withExample("bad example: does not pass validation", new Animal("Sparky", "Dragon"))
+                .fromPrompt("""
+                        You just woke up in a magical forest.
+                        Invent a fictional animal.
+                        The animal should have a name and a species.
+                        """);
     }
 }

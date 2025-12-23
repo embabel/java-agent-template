@@ -1,24 +1,16 @@
 <img align="left" src="https://github.com/embabel/embabel-agent/blob/main/embabel-agent-api/images/315px-Meister_der_Weltenchronik_001.jpg?raw=true" width="180">
 
-![Build](https://github.com/embabel/java-agent-template/actions/workflows/maven.yml/badge.svg)
-
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
-![Apache Tomcat](https://img.shields.io/badge/apache%20tomcat-%23F8DC75.svg?style=for-the-badge&logo=apache-tomcat&logoColor=black)
-![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
-![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
-![JSON](https://img.shields.io/badge/JSON-000?logo=json&logoColor=fff)
-![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![IntelliJ IDEA](https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
-
-&nbsp;&nbsp;&nbsp;&nbsp;
-
-&nbsp;&nbsp;&nbsp;&nbsp;
-
 # Generated Agent Project
 
+![Build](https://github.com/embabel/java-agent-template/actions/workflows/maven.yml/badge.svg)
+
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white) ![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white) ![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
+
+<br clear="left"/>
+
 Starting point for your own agent development using the [Embabel framework](https://github.com/embabel/embabel-agent).
+
+Uses Spring Boot 3.5.9 and Embabel 0.3.1.
 
 Add your magic here!
 
@@ -79,9 +71,64 @@ See [LLM integration guide](docs/llm-docs.md) (work in progress).
 
 Also see [Spring AI models](https://docs.spring.io/spring-ai/reference/api/index.html).
 
-## A2A support
+## Testing
 
-Embabel integrates with Google A2a. See [A2A integration](docs/a2a.md).
+This repository includes unit tests and integration tests demonstrating how to test Embabel agents.
+
+### Running Tests
+
+```bash
+mvn test
+```
+
+### Unit Tests
+
+Unit tests use Embabel's `FakeOperationContext` and `FakePromptRunner` to test agent actions in isolation without
+calling actual LLMs.
+
+See [WriteAndReviewAgentTest.java](./src/test/java/com/embabel/template/agent/WriteAndReviewAgentTest.java) for examples
+of:
+
+- Creating a fake context with `FakeOperationContext.create()`
+- Setting up expected responses with `context.expectResponse()`
+- Verifying prompt content contains expected values
+- Inspecting LLM invocations via `promptRunner.getLlmInvocations()`
+
+```java
+var context = FakeOperationContext.create();
+context.expectResponse(new Story("Once upon a time..."));
+
+var story = agent.craftStory(userInput, context.ai());
+
+var prompt = context.getLlmInvocations().getFirst().getMessages().getFirst().getContent();
+assertTrue(prompt.contains("knight"));
+```
+
+### Integration Tests
+
+Integration tests extend `EmbabelMockitoIntegrationTest` to test complete agent workflows under Spring Boot with a fully
+configured `AgentPlatform`.
+
+See [WriteAndReviewAgentIntegrationTest.java](./src/test/java/com/embabel/template/agent/WriteAndReviewAgentIntegrationTest.java)
+for examples of:
+
+- Mocking LLM responses with `whenCreateObject()` and `whenGenerateText()`
+- Running complete agent workflows via `AgentInvocation`
+- Verifying LLM calls and hyperparameters with `verifyCreateObjectMatching()` and `verifyGenerateTextMatching()`
+
+```java
+whenCreateObject(prompt -> prompt.contains("Craft a short story"), Story.class)
+    .thenReturn(new Story("AI will transform our world..."));
+
+var invocation = AgentInvocation.create(agentPlatform, ReviewedStory.class);
+var result = invocation.invoke(input);
+
+verifyCreateObjectMatching(
+    prompt -> prompt.contains("Craft a short story"),
+    Story.class,
+    llm -> llm.getLlm().getTemperature() == 0.7
+);
+```
 
 ## Contributors
 
