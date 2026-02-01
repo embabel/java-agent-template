@@ -34,12 +34,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 abstract class Personas {
-    static final RoleGoalBackstory WRITER = RoleGoalBackstory
-            .withRole("Creative Storyteller")
-            .andGoal("Write engaging and imaginative stories")
-            .andBackstory("Has a PhD in French literature; used to work in a circus");
+    static final RoleGoalBackstory WRITER = new RoleGoalBackstory(
+            "Creative Storyteller",
+            "Write engaging and imaginative stories",
+            "Has a PhD in French literature; used to work in a circus");
 
-    static final Persona REVIEWER = Persona.create(
+    static final Persona REVIEWER = new Persona(
             "Media Book Review",
             "New York Times Book Reviewer",
             "Professional and insightful",
