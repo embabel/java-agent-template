@@ -140,7 +140,8 @@ public class WriteAndReviewAgent {
                         .withTemperature(.7)
                 )
                 .withPromptContributor(Personas.WRITER)
-                .createObject(String.format("""
+                .creating(Story.class)
+                .fromPrompt(String.format("""
                                 Craft a short story in %d words or less.
                                 The story should be engaging and imaginative.
                                 Use the user's input as inspiration if possible.
@@ -151,6 +152,6 @@ public class WriteAndReviewAgent {
                                 """,
                         storyWordCount,
                         userInput.getContent()
-                ).trim(), Story.class);
+                ).trim());
     }
 }
