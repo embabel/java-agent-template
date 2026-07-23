@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.13</version>
+        <version>3.5.16</version>
         <relativePath/> <!-- Lookup parent from repository -->
     </parent>
     <groupId>com.embabel.template</groupId>
@@ -18,7 +18,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <embabel-agent.version>0.3.5</embabel-agent.version>
+        <embabel-agent.version>1.0.0</embabel-agent.version>
     </properties>
 
     <dependencies>
