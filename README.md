@@ -10,7 +10,7 @@
 
 Starting point for your own agent development using the [Embabel framework](https://github.com/embabel/embabel-agent).
 
-Uses Spring Boot 3.5.9 and Embabel 0.3.1.
+Uses Spring Boot 4.x.x.
 
 Add your magic here!
 
